@@ -82,6 +82,12 @@ namespace ARDrone.Hud
             currentState.BatteryLevel = batteryLevel;
         }
 
+        public void SetLatLong(double lat, double longi)
+        {
+            currentState.Latitude = lat;
+            currentState.Longitude = longi;
+        }
+
         public BitmapSource DrawHud(BitmapSource cameraImage)
         {
             if (!showHud)

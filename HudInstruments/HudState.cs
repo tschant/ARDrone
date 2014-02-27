@@ -27,6 +27,9 @@ namespace ARDrone.Hud
 
         private double overallSpeed;
 
+        private double latitude;
+        private double longitude;
+
         private int altitude;
         private int batteryLevel;
 
@@ -41,6 +44,9 @@ namespace ARDrone.Hud
             roll = 0.0f;
             pitch = 0.0f;
             yaw = 0.0f;
+
+            latitude = 0.0f;
+            longitude = 0.0f;
 
             altitude = 0;
             batteryLevel = 0;
@@ -102,6 +108,17 @@ namespace ARDrone.Hud
         {
             get { return altitude; }
             set { altitude = value; }
+        }
+
+        public double Latitude
+        {
+            get { return latitude; }
+            set { latitude = value; }
+        }
+        public double Longitude
+        {
+            get { return longitude; }
+            set { longitude = value; }
         }
 
         public int BatteryLevel

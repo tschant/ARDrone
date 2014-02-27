@@ -26,7 +26,7 @@ using ARDrone.Control.Utils;
 
 namespace ARDrone.Control.Workers
 {
-    public class VideoDataRetriever : UdpWorker
+    public class VideoDataRetriever : UdpWorker //Changed from udp to tcp
     {
         private const int keepAliveSignalInterval = 200;
 
@@ -69,14 +69,19 @@ namespace ARDrone.Control.Workers
                     if (IsKeepAliveSignalNeeded())
                         SendMessage(1);
 
-                        //NetworkStream netStream = client.GetStream();
+                        //Udp receive code
                         byte[] buffer = client.Receive(ref endpoint);
-                        //byte[] buffer = new byte[client.ReceiveBufferSize];
-                        //netStream.Read(buffer, 0, (int)client.ReceiveBufferSize);
 
-                        //string returndata = Encoding.UTF8.GetString (buffer);
-                        //Console.WriteLine("This is what the host returned to you: " + returndata);
-
+                        //For Tcp based connnection
+                        //this is to replace the receive function
+                        /*
+                        stream = client.GetStream();
+                        byte[] buffer = new byte[client.ReceiveBufferSize];
+                        stream.Read(buffer, 0, (int)client.ReceiveBufferSize);
+                        //Test to make sure data is read
+                        string returndata = Encoding.UTF8.GetString (buffer);
+                        Console.WriteLine("This is what the host returned to you: " + returndata);
+                        */
                         if (buffer.Length > 0)
                             videoUtils.ProcessByteStream(buffer);
                 }

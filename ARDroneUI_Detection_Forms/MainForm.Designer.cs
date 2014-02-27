@@ -57,6 +57,10 @@ namespace ARDroneUI_Detection_Forms
             this.labelStatusHoveringInfo = new System.Windows.Forms.Label();
             this.labelStatusFlyingInfo = new System.Windows.Forms.Label();
             this.labelStatusBatteryInfo = new System.Windows.Forms.Label();
+
+            this.labelStatusLatitude = new System.Windows.Forms.Label();
+            this.labelStatusLongitude = new System.Windows.Forms.Label();
+
             this.timerStatusUpdate = new System.Windows.Forms.Timer(this.components);
             this.timerVideoUpdate = new System.Windows.Forms.Timer(this.components);
             this.labelCamera = new System.Windows.Forms.Label();
@@ -298,6 +302,17 @@ namespace ARDroneUI_Detection_Forms
             this.labelStatusHoveringInfo.Size = new System.Drawing.Size(50, 13);
             this.labelStatusHoveringInfo.TabIndex = 4;
             this.labelStatusHoveringInfo.Text = "Hovering";
+           
+            //
+            // labelStatusLatitude
+            //
+            //this.labelStatusLatitude.AutoSize = true;
+            //this.labelStatusLatitude.Location = new System.Drawing.Point(
+
+
+
+
+
             // 
             // labelStatusFlyingInfo
             // 
@@ -418,6 +433,10 @@ namespace ARDroneUI_Detection_Forms
         private System.Windows.Forms.Label labelStatusHovering;
         private System.Windows.Forms.Label labelStatusFlying;
         private System.Windows.Forms.Label labelStatusBattery;
+
+        private System.Windows.Forms.Label labelStatusLatitude;
+        private System.Windows.Forms.Label labelStatusLongitude;
+
         private System.Windows.Forms.Label labelStatusHoveringInfo;
         private System.Windows.Forms.Label labelStatusFlyingInfo;
         private System.Windows.Forms.Label labelStatusBatteryInfo;

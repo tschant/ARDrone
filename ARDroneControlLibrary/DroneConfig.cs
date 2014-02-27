@@ -31,10 +31,13 @@ namespace ARDrone.Control
         private String droneIpAddress;
         private String droneNetworkIdentifierStart;
 
-        private int videoPort;
-        private int navigationPort;
-        private int commandPort;
-        private int controlInfoPort;
+        //THIS IS CHANGED (remove values if not working)
+        //Initialize values when app starts, since menu was causing crashes
+        private int videoPort = 5555;
+        private int navigationPort = 5554;
+        private int commandPort = 5556;
+        private int controlInfoPort = 5559;
+        private int gpsPort = 2947;
 
         private int timeoutValue;
 
@@ -135,6 +138,12 @@ namespace ARDrone.Control
         {
             get { return videoPort; }
             set { CheckForDroneConfigState(); videoPort = value; }
+        }
+
+        public int GPSPort
+        {
+            get { return gpsPort; }
+            set { CheckForDroneConfigState(); gpsPort = value; }
         }
 
         public int NavigationPort

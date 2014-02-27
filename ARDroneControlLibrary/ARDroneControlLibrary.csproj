@@ -86,10 +86,13 @@
     <Compile Include="Utils\VideoUtils.cs" />
     <Compile Include="Wifi\WifiInterop.cs" />
     <Compile Include="Wifi\WlanApi.cs" />
+    <Compile Include="Workers\GPSDataRetriever.cs" />
     <Compile Include="Workers\NetworkConnector.cs" />
     <Compile Include="Workers\CommandSender.cs" />
     <Compile Include="Workers\NavigationDataRetriever.cs" />
     <Compile Include="Workers\NetworkSanityChecker.cs" />
+    <Compile Include="Workers\TelNet\Program.cs" />
+    <Compile Include="Workers\TelnetInterface.cs" />
     <Compile Include="Workers\VideoDataRetriever.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +108,12 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Workers\gps.h" />
+    <Content Include="Data\gps_test.c" />
+    <Content Include="Workers\PuTTY\PUTTY.EXE" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -38,6 +38,7 @@ namespace ARDrone.Control
         private NetworkSanityChecker networkSanityChecker;
         private VideoDataRetriever videoDataRetriever;
         private NavigationDataRetriever navigationDataRetriever;
+        //private GPSDataRetriever gpsDataRetriever;
         private CommandSender commandSender;
         private ControlInfoRetriever controlInfoRetriever;
 
@@ -122,6 +123,11 @@ namespace ARDrone.Control
             videoDataRetriever.ConnectionStateChanged += networkWorker_ConnectionStateChanged;
             videoDataRetriever.Error += networkWorker_Error;
 
+            //ADDED THIS CODE!
+            //gpsDataRetriever = new GPSDataRetriever(networkConnector, droneConfig.DroneIpAddress, droneConfig.GPSPort, droneConfig.TimeoutValue);
+            //gpsDataRetriever.ConnectionStateChanged += networkWorker_ConnectionStateChanged;
+            //gpsDataRetriever.Error += networkWorker_Error;
+
             navigationDataRetriever = new NavigationDataRetriever(networkConnector, droneConfig.DroneIpAddress, droneConfig.NavigationPort, droneConfig.TimeoutValue);
             navigationDataRetriever.ConnectionStateChanged += networkWorker_ConnectionStateChanged;
             navigationDataRetriever.Error += networkWorker_Error;
@@ -186,7 +192,7 @@ namespace ARDrone.Control
         {
             networkSanityChecker.CheckNetworkSanity();
         }
-
+        
         private void ProcessSanityCheckResult(NetworkSanityCheckEventArgs e)
         {
             if (e.IsSane)
@@ -200,7 +206,7 @@ namespace ARDrone.Control
                 InvokeError(new Exception("Error while connecting to the drone. Have you connected to the drone network?", e.Exception));
             }
         }
-
+        
         private void InvokeNetworkConnectionStateChange(DroneNetworkConnectionStateChangedEventArgs e)
         {
             if (e.State == DroneNetworkConnectionState.PingSuccesful)
@@ -288,6 +294,8 @@ namespace ARDrone.Control
 
             if (!videoDataRetriever.Connected)
                 videoDataRetriever.Connect();
+            //if (!gpsDataRetriever.Connected)
+            //    gpsDataRetriever.Connect();
             if (!navigationDataRetriever.Connected)
                 navigationDataRetriever.Connect();
             if (!commandSender.Connected)
@@ -304,6 +312,8 @@ namespace ARDrone.Control
                 navigationDataRetriever.Disconnect();
             if (videoDataRetriever.Connected)
                 videoDataRetriever.Disconnect();
+           // if (gpsDataRetriever.Connected)
+            //    gpsDataRetriever.Disconnect();
 
             ResetFlightVariables();
         }

@@ -31,6 +31,7 @@ using ARDrone.Input.Utils;
 using ARDrone.Control.Commands;
 using ARDrone.Control.Data;
 using ARDrone.Control.Events;
+using ARDrone.Control.Workers;
 using System.Diagnostics;
 using System.Configuration;
 
@@ -62,10 +63,14 @@ namespace ARDrone.UI
         private DroneConfig currentDroneConfig;
         private HudConfig currentHudConfig;
 
+        private GPSDataRetriever gps_start;
+        private Process cmdVideo;
 
         int frameCountSinceLastCapture = 0;
         DateTime lastFrameRateCaptureTime;
         int averageFrameRate = 0;
+
+        bool gps_running = false;
 
         String snapshotFilePath = string.Empty;
         int snapshotFileCount = 0;
@@ -155,6 +160,7 @@ namespace ARDrone.UI
         private void InitializeDroneControl(DroneConfig droneConfig)
         {
             droneControl = new DroneControl(droneConfig);
+            //gps_start = new GPSDataRetriever();
         }
 
         private bool ShowSplashScreen()
@@ -251,18 +257,34 @@ namespace ARDrone.UI
             UpdateStatus();
             UpdateInteractiveElements();
         }
-        private void process(int x)
+
+        private void processOpen()
         {
+            //Process cmdVideo = new Process();
             string command = "/c C:\\ffmpeg\\ffplay.exe tcp://" + droneControl.droneConfig.DroneIpAddress + ":" + droneControl.droneConfig.VideoPort;
-            
-            Process p = new Process();
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = command;
-            p.StartInfo.Verb = "runas";
-            if (x == 1)
-            {
-                p.Start();
-            }
+            //if called from connect, x will be 1 and the video will open in a new window
+            cmdVideo.StartInfo.FileName = "cmd.exe";
+            cmdVideo.StartInfo.Arguments = command;
+            cmdVideo.StartInfo.Verb = "runas";
+            cmdVideo.Start();
+            UpdateUISync("Video started");
+
+            gps_start = new GPSDataRetriever(droneControl);
+            gps_running = true;
+            //UpdateUIAsync(gps_start.Write());
+            //gps_start.Connect();
+            //textBoxOutput.AppendText(gps_start.Write() + "\r\n");
+            //scrollViewerOutput.ScrollToBottom();
+            //UpdateInteractiveElements();
+        }
+        private void processClose()
+        {
+            // otherwise it is called from disconnect and will close the cmd prompt and video
+                
+                //cmdVideo.Kill();
+                cmdVideo.Close();
+                cmdVideo.CloseMainWindow();
+                UpdateUISync("Video closed");
         }
 
         private void Connect()
@@ -270,13 +292,16 @@ namespace ARDrone.UI
             //after clicking "Startup", the computer connects and opens a window
             droneControl.ConnectToDrone();
             UpdateUISync("Connecting to the drone");
-
+            
             timerHudStatusUpdate.Start();
             timerVideoUpdate.Start();
             
             //Opens video to AR Drone in new window
-            process(1);
-            
+            cmdVideo = new Process();
+            processOpen();
+
+            UpdateUIAsync(gps_start.Write());
+
             lastFrameRateCaptureTime = DateTime.Now;
         }
 
@@ -291,10 +316,12 @@ namespace ARDrone.UI
             }
             
             droneControl.Disconnect();
+            //processClose();
             UpdateUISync("Disconnecting from drone");
-            process(0);
+            
         }
 
+        //Start command list for drone control
         private void ChangeCamera()
         {
             Command switchCameraCommand = new SwitchCameraCommand(DroneCameraMode.NextMode);
@@ -305,7 +332,7 @@ namespace ARDrone.UI
             droneControl.SendCommand(switchCameraCommand);
             UpdateUIAsync("Changing camera");
         }
-
+        
         private void Takeoff()
         {
             Command takeOffCommand = new FlightModeCommand(DroneFlightMode.TakeOff);
@@ -386,6 +413,7 @@ namespace ARDrone.UI
             if (droneControl.IsCommandPossible(flightMoveCommand))
                 droneControl.SendCommand(flightMoveCommand);
         }
+        //End commands
 
         private void UpdateUIAsync(String message)
         {
@@ -428,6 +456,8 @@ namespace ARDrone.UI
             if (videoRecorder.IsCompressionRunning) { labelVideoStatus.Content = "Compressing"; }
             else if (videoRecorder.IsVideoCaptureRunning) { labelVideoStatus.Content = "Recording"; }
             else { labelVideoStatus.Content = "Idling ..."; }
+
+            //if (gps_running) { UpdateUIAsync(gps_start.Write()); }
         }
 
         private void UpdateStatus()
@@ -439,6 +469,10 @@ namespace ARDrone.UI
 
                 labelStatusBattery.Content = "N/A";
                 labelStatusAltitude.Content = "N/A";
+
+                labelStatusTime.Content = "0.0";
+                labelStatusLat.Content = "0.0";
+                labelStatusLong.Content = "0.0";
 
                 labelStatusFrameRate.Content = "No video";
 
@@ -453,7 +487,11 @@ namespace ARDrone.UI
 
                 labelStatusBattery.Content = data.BatteryLevel.ToString() + "%";
                 labelStatusAltitude.Content = data.Altitude.ToString();
-
+                /*
+                labelStatusTime.Content = data.time.ToString();
+                labelStatusLat.Content = data.lat.ToString();
+                labelStatusLong.Content = data.longi.ToString();
+                */
                 labelStatusFrameRate.Content = frameRate.ToString();
             }
 
@@ -499,6 +537,8 @@ namespace ARDrone.UI
                 hudInterface.SetAltitude(data.Altitude);
                 hudInterface.SetOverallSpeed(data.VX, data.VY, data.VZ);
                 hudInterface.SetBatteryLevel(data.BatteryLevel);
+
+                //hudInterface.SetLatLong(data.lat, data.longi);
             }
         }
 
@@ -1033,7 +1073,7 @@ namespace ARDrone.UI
         {
 
             //Process.Start("cmd.exe", "ffplay tcp://" + droneControl.droneConfig.StandardOwnIpAddress + ":" + droneControl.droneConfig.VideoPort);
-           
+            //gps_start = new GPSDataRetriever();
             
             string command = "/k C:\\ffmpeg\\ffplay.exe tcp://" + droneControl.droneConfig.StandardOwnIpAddress + ":" + droneControl.droneConfig.VideoPort;
             Process p = new Process();

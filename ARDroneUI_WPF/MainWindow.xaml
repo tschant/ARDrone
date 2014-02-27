@@ -83,6 +83,9 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
                             <Label Content="Battery status" Grid.Row="0" Grid.Column="0" Style="{StaticResource styleContentLabel}" Margin="0,10,0,0" />
@@ -101,6 +104,14 @@
                             <Label Name="labelStatusEmergency" Content="false" Grid.Row="6" Grid.Column="1" Style="{StaticResource styleContentLabel}" />
                             <Label Content="Frame Rate" Grid.Row="7" Grid.Column="0" Style="{StaticResource styleContentLabel}" Margin="0,10,0,10" />
                             <Label Name="labelStatusFrameRate" Content="No video" Grid.Row="7" Grid.Column="1" Style="{StaticResource styleContentLabel}" Margin="0,10,0,10" />
+                            
+                            <Label Content="Time" Grid.Row="8" Grid.Column="0" Style="{StaticResource styleContentLabel}" />
+                            <Label Name="labelStatusTime" Content="0.0" Grid.Row="8" Grid.Column="1" Style="{StaticResource styleContentLabel}" />
+                            <Label Content="Latitude" Grid.Row="9" Grid.Column="0" Style="{StaticResource styleContentLabel}" />
+                            <Label Name="labelStatusLat" Content="0.0" Grid.Row="9" Grid.Column="1" Style="{StaticResource styleContentLabel}" />
+                            <Label Content="Longitude" Grid.Row="10" Grid.Column="0" Style="{StaticResource styleContentLabel}" />
+                            <Label Name="labelStatusLong" Content="0.0" Grid.Row="10" Grid.Column="1" Style="{StaticResource styleContentLabel}" />
+
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Video &amp; Snapshots" >

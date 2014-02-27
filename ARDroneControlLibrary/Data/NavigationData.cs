@@ -54,6 +54,11 @@ namespace ARDrone.Control.Data
         public double vY;
         public double vZ;
 
+        //public double time;
+        //public double lat;
+        //public double longi;
+
+
         public int altitude;
         public int batteryLevel;
 
@@ -67,9 +72,20 @@ namespace ARDrone.Control.Data
             vY = 0.0;
             vZ = 0.0;
 
+            //time = 0.0;
+            //lat = 0.0;
+            //longi = 0.0;
+
             altitude = 0;
             batteryLevel = 0;
         }
+
+        //[DllImport("gps_test.c", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern double get_time();
+        //[DllImport("gps_test.c", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern double get_lat();
+        //[DllImport("gps_test.c", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern double get_long();
 
         public DroneData(NavigationDataStruct navigationDataStruct)
         {
@@ -80,6 +96,10 @@ namespace ARDrone.Control.Data
             vX = navigationDataStruct.VX;
             vY = navigationDataStruct.VY;
             vZ = navigationDataStruct.VZ;
+
+            //time = get_time();
+            //lat = get_lat();
+            //longi = get_long();
 
             altitude = navigationDataStruct.Altitude;
             batteryLevel = (int)navigationDataStruct.BatteryLevel;
@@ -148,5 +168,28 @@ namespace ARDrone.Control.Data
                 return batteryLevel;
             }
         }
+/*
+        public double Time
+        {
+            get
+            {
+                return time;
+            }
+        }
+        public double Latitude
+        {
+            get
+            {
+                return lat;
+            }
+        }
+        public double Longitude
+        {
+            get
+            {
+                return longi;
+            }
+        }
+ * */
     }
 }

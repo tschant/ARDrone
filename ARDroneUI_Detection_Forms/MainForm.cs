@@ -283,6 +283,7 @@ namespace ARDroneUI_Detection_Forms
                 labelStatusPitch.Text = String.Format("{0:+0.000;-0.000;+0.000}", data.Theta);
                 labelStatusRoll.Text = String.Format("{0:+0.000;-0.000;+0.000}", data.Phi);
                 labelStatusBattery.Text = data.BatteryLevel + "%";
+                
             }
 
             labelStatusConnected.Text = droneControl.IsConnected.ToString();
