@@ -457,7 +457,10 @@ namespace ARDrone.UI
             else if (videoRecorder.IsVideoCaptureRunning) { labelVideoStatus.Content = "Recording"; }
             else { labelVideoStatus.Content = "Idling ..."; }
 
-            //if (gps_running) { UpdateUIAsync(gps_start.Write()); }
+
+            /* TO-DO---
+             * Add code to update labelGPSLat, and labelGPSLong
+            */
         }
 
         private void UpdateStatus()
