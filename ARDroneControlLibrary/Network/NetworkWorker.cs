@@ -100,7 +100,7 @@ namespace ARDrone.Control.Network
                 catch (SocketException)
                 {
                     //if (!IsNormalDisconnectError(e))
-                        //throw e;
+                      //  throw e;
                 }
             }
             catch (Exception e)

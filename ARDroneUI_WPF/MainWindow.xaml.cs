@@ -35,7 +35,8 @@ using ARDrone.Control.Workers;
 using System.Diagnostics;
 using System.Configuration;
 
-
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace ARDrone.UI
 {
@@ -70,7 +71,7 @@ namespace ARDrone.UI
         DateTime lastFrameRateCaptureTime;
         int averageFrameRate = 0;
 
-        bool gps_running = false;
+        //bool gps_running = false;
 
         String snapshotFilePath = string.Empty;
         int snapshotFileCount = 0;
@@ -258,24 +259,33 @@ namespace ARDrone.UI
             UpdateInteractiveElements();
         }
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
         private void processOpen()
         {
-            //Process cmdVideo = new Process();
-            string command = "/c C:\\ffmpeg\\ffplay.exe tcp://" + droneControl.droneConfig.DroneIpAddress + ":" + droneControl.droneConfig.VideoPort;
-            //if called from connect, x will be 1 and the video will open in a new window
-            cmdVideo.StartInfo.FileName = "cmd.exe";
-            cmdVideo.StartInfo.Arguments = command;
-            cmdVideo.StartInfo.Verb = "runas";
-            cmdVideo.Start();
-            UpdateUISync("Video started");
-
+            //run the GPS
             gps_start = new GPSDataRetriever(droneControl);
-            gps_running = true;
-            //UpdateUIAsync(gps_start.Write());
-            //gps_start.Connect();
-            //textBoxOutput.AppendText(gps_start.Write() + "\r\n");
-            //scrollViewerOutput.ScrollToBottom();
-            //UpdateInteractiveElements();
+
+            //Process cmdVideo = new Process(); /c C:\\ffmpeg\\ffplay.exe 
+            string command = "tcp://" + droneControl.droneConfig.DroneIpAddress + ":" + droneControl.droneConfig.VideoPort;
+            //if called from connect, x will be 1 and the video will open in a new window
+            cmdVideo.StartInfo.FileName = "C:\\ffmpeg\\ffplay.exe";
+            cmdVideo.StartInfo.Arguments = command;
+            //cmdVideo.StartInfo.Verb = "runas";
+            //cmdVideo.StartInfo.CreateNoWindow = true;
+            //cmdVideo.StartInfo.UseShellExecute = true;
+
+            cmdVideo.Start();
+            //SetParent(cmdVideo.MainWindowHandle, new WindowInteropHelper(this).Handle);
+
+            //MoveWindow(cmdVideo.MainWindowHandle, 0, 0, 320, 280, true);
+            
+            UpdateUISync("Video started");
+ 
         }
         private void processClose()
         {
@@ -300,8 +310,6 @@ namespace ARDrone.UI
             cmdVideo = new Process();
             processOpen();
 
-            UpdateUIAsync(gps_start.Write());
-
             lastFrameRateCaptureTime = DateTime.Now;
         }
 
@@ -309,7 +317,8 @@ namespace ARDrone.UI
         {
             timerHudStatusUpdate.Stop();
             timerVideoUpdate.Stop();
-
+            //gps_start.Disconnect();
+            //Need to figure out disconnect GPSD nicely
             if (videoRecorder != null && videoRecorder.IsVideoCaptureRunning)
             {
                 videoRecorder.EndVideo();
@@ -456,11 +465,6 @@ namespace ARDrone.UI
             if (videoRecorder.IsCompressionRunning) { labelVideoStatus.Content = "Compressing"; }
             else if (videoRecorder.IsVideoCaptureRunning) { labelVideoStatus.Content = "Recording"; }
             else { labelVideoStatus.Content = "Idling ..."; }
-
-
-            /* TO-DO---
-             * Add code to update labelGPSLat, and labelGPSLong
-            */
         }
 
         private void UpdateStatus()
@@ -473,9 +477,9 @@ namespace ARDrone.UI
                 labelStatusBattery.Content = "N/A";
                 labelStatusAltitude.Content = "N/A";
 
-                labelStatusTime.Content = "0.0";
-                labelStatusLat.Content = "0.0";
-                labelStatusLong.Content = "0.0";
+                //labelGPSTime.Content = "0.0";
+                labelGPSLat.Content = "0.0";
+                labelGPSLong.Content = "0.0";
 
                 labelStatusFrameRate.Content = "No video";
 
@@ -490,11 +494,16 @@ namespace ARDrone.UI
 
                 labelStatusBattery.Content = data.BatteryLevel.ToString() + "%";
                 labelStatusAltitude.Content = data.Altitude.ToString();
-                /*
-                labelStatusTime.Content = data.time.ToString();
-                labelStatusLat.Content = data.lat.ToString();
-                labelStatusLong.Content = data.longi.ToString();
-                */
+
+                gps_start.parse();
+                //labelStatusTime.Content = GPSDataRetriever.getTime();
+                labelGPSLat.Content = gps_start.getLatitude();
+                labelGPSLong.Content = gps_start.getLongitude();
+               // string[] t = gps_start.getTEXT();
+               // for(int i = 0; i < t.Length; i++){
+               //     UpdateUIAsync(t[i]);
+               // }
+
                 labelStatusFrameRate.Content = frameRate.ToString();
             }
 

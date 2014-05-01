@@ -111,18 +111,18 @@ namespace ARDrone.UI
 
         private void HandleError(DroneErrorEventArgs args)
         {
-            String errorText = SerializeException((NetworkConnectionException) args.CausingException);
-            errorText += "\nStart anyway?";
+            //String errorText = SerializeException((NetworkConnectionException) args.CausingException);
+            //errorText += "\nStart anyway?";
 
-            MessageBoxResult result = MessageBox.Show(errorText, "An error occured", MessageBoxButton.YesNo, MessageBoxImage.Error);
-            if (result == MessageBoxResult.Yes)
-            {
+            // MessageBoxResult result = MessageBox.Show(errorText, "An error occured", MessageBoxButton.YesNo, MessageBoxImage.Error);
+            // if (result == MessageBoxResult.Yes)
+            //{
                 StartMainApplication();
-            }
-            else
-            {
-                CloseDialog();
-            }
+            //}
+            //else
+            //{
+            //    CloseDialog();
+            //}
         }
 
         private String SerializeException(NetworkConnectionException e)

@@ -33,6 +33,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExcelLibrary">
+      <HintPath>Workers\ExcelLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -86,6 +89,7 @@
     <Compile Include="Utils\VideoUtils.cs" />
     <Compile Include="Wifi\WifiInterop.cs" />
     <Compile Include="Wifi\WlanApi.cs" />
+    <Compile Include="Workers\TCPVideoDataRetriever.cs" />
     <Compile Include="Workers\GPSDataRetriever.cs" />
     <Compile Include="Workers\NetworkConnector.cs" />
     <Compile Include="Workers\CommandSender.cs" />

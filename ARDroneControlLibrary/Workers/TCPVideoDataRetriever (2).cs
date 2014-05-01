@@ -26,7 +26,7 @@ using ARDrone.Control.Utils;
 
 namespace ARDrone.Control.Workers
 {
-    public class VideoDataRetriever : UdpWorker //Changed from udp to tcp
+    public class VideoDataRetriever : TcpWorker //Changed from udp to tcp
     {
         private const int keepAliveSignalInterval = 200;
 
@@ -35,6 +35,9 @@ namespace ARDrone.Control.Workers
         private VideoUtils videoUtils;
         private Bitmap currentBitmap;
         private ImageSource currentImage;
+
+        //private TcpClient tcpObject;
+        //private NetworkStream tcpStream;
 
         public VideoDataRetriever(NetworkConnector networkConnector, String remoteIpAddress, int port, int timeoutValue)
             : base(networkConnector, remoteIpAddress, port, timeoutValue)
@@ -57,8 +60,6 @@ namespace ARDrone.Control.Workers
             ResetVariables();
         }
 
-        
-
         protected override void ProcessWorkerThread()
         {
             StartKeepAliveSignal();
@@ -68,24 +69,31 @@ namespace ARDrone.Control.Workers
             {
                 try
                 {
-                    if (IsKeepAliveSignalNeeded())
-                        SendMessage(1);
+                    //if (IsKeepAliveSignalNeeded())
+                        //SendMessage(1);
 
-                        //Udp receive code
-                        byte[] buffer = client.Receive(ref endpoint);
+                    //tcpStream = tcpObject.GetStream();
+                    //stream = client.GetStream();
+                    int totalRead = 0;
+                    int read = 0;
 
-                        //For Tcp based connnection
-                        //this is to replace the receive function
-                        /*
-                        stream = client.GetStream();
-                        byte[] buffer = new byte[client.ReceiveBufferSize];
-                        stream.Read(buffer, 0, (int)client.ReceiveBufferSize);
-                        //Test to make sure data is read
-                        string returndata = Encoding.UTF8.GetString (buffer);
-                        Console.WriteLine("This is what the host returned to you: " + returndata);
-                        */
-                        if (buffer.Length > 0)
-                            videoUtils.ProcessByteStream(buffer);
+                    int bufferSize = System.Convert.ToInt32(client.ReceiveBufferSize);
+                    byte[] message = new byte[client.ReceiveBufferSize];
+                    /*
+                    do
+                    {
+
+                        read = stream.Read(message, 0, bufferSize);
+                        if (read > 0)
+                        {
+                            totalRead += read;
+                        }
+                        stream.Flush();
+
+                    } while (totalRead < bufferSize);
+                     
+                    videoUtils.ProcessByteStream(message);
+                     */
                 }
                 catch (SocketException e)
                 {
